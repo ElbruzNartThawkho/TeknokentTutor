@@ -1,2 +1,2 @@
 # TeknokentTutor
-Teknokent ikinci hafta eğitimi
+Teknokent eğitimi

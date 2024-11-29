@@ -8,15 +8,18 @@ public class InputHandler : MonoBehaviour
     {
         movement = GetComponent<Movement>();
     }
-    public void Move(InputAction.CallbackContext callbackContext)
+    public void Move_performed(InputAction.CallbackContext obj)
     {
-        movement.Move(callbackContext.ReadValue<Vector2>().x, callbackContext.ReadValue<Vector2>().y);
+        movement.horizontal = obj.ReadValue<Vector2>().x;
+        movement.vertical = obj.ReadValue<Vector2>().y;
     }
-    public void Jump(InputAction.CallbackContext callbackContext)
+    public void Jump_performed(InputAction.CallbackContext obj)
     {
-        if (callbackContext.performed)
-        {
-            movement.Jump();
-        }
+        if (obj.performed) movement.JumpPerformed();
+    }
+    public void Run_performed(InputAction.CallbackContext obj)
+    {
+        if (obj.performed) movement.RunPerformed();
+        if (obj.canceled) movement.RunCancled();
     }
 }

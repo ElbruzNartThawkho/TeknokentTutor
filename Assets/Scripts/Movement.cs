@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -6,10 +7,10 @@ public class Movement : MonoBehaviour
     public float walkSpeed;
     public float runSpeed;
     public float jumpPower;
-    //public float dashSpeed;
-    //public float dashTime;
-    //public float slideSpeed;
-    //public float slideTime;
+    public float dashSpeed;
+    public float dashTime;
+    public float slideSpeed;
+    public float slideTime;
     public float smoothFactor;
     public float gravity;
 
@@ -17,9 +18,9 @@ public class Movement : MonoBehaviour
     float velocityHorizontal;
     float speed;
 
-    //bool doubleJump = false;
-    //bool dash = true;
-    //bool isSliding = false;
+    bool doubleJump = false;
+    bool dash = true;
+    bool isSliding = false;
 
     Vector3 velocity = Vector3.zero;
 
@@ -49,28 +50,28 @@ public class Movement : MonoBehaviour
         if (GroundCheck())
         {
             animator.SetBool("Grounded", true);
-            //dash = true;
+            dash = true;
         }
         else
         {
             animator.SetBool("Grounded", false);
             velocityHorizontal -= gravity;
         }
-        //if (!isSliding)
-        //{
-        //    if (AbovedCheck())
-        //    {
-        //        charactercontroller.height = 1;
-        //        charactercontroller.center = new Vector3(charactercontroller.center.x, -.5f, charactercontroller.center.z);
-        //        transform.GetChild(0).localPosition = new Vector3(transform.GetChild(0).localPosition.x, 0, transform.GetChild(0).localPosition.z);
-        //    }
-        //    else
-        //    {
-        //        charactercontroller.height = 2;
-        //        charactercontroller.center = new Vector3(charactercontroller.center.x, 0, charactercontroller.center.z);
-        //        transform.GetChild(0).localPosition = new Vector3(transform.GetChild(0).localPosition.x, .5f, transform.GetChild(0).localPosition.z);
-        //    }
-        //}
+        if (!isSliding)
+        {
+            if (AbovedCheck())
+            {
+                charactercontroller.height = 1;
+                charactercontroller.center = new Vector3(charactercontroller.center.x, .5f, charactercontroller.center.z);
+                animator.SetBool("Above", true);
+            }
+            else
+            {
+                charactercontroller.height = 2;
+                charactercontroller.center = new Vector3(charactercontroller.center.x, 1, charactercontroller.center.z);
+                animator.SetBool("Above", false);
+            }
+        }
         velocity = Vector3.Lerp(velocity, (h * speed * transform.right + v * speed * transform.forward), smoothFactor * Time.deltaTime);
         charactercontroller.Move(Time.deltaTime * velocity + Time.deltaTime * velocityHorizontal * Vector3.up);
         if (speed == walkSpeed)
@@ -93,16 +94,16 @@ public class Movement : MonoBehaviour
     {
         if (GroundCheck())
         {
-            //doubleJump = true;
+            doubleJump = true;
             velocityHorizontal = 0;
             velocityHorizontal += jumpPower;
         }
-        //else if (doubleJump)
-        //{
-        //    velocityHorizontal = 0;
-        //    velocityHorizontal += jumpPower;
-        //    doubleJump = false;
-        //}
+        else if (doubleJump)
+        {
+            velocityHorizontal = 0;
+            velocityHorizontal += jumpPower;
+            doubleJump = false;
+        }
     }
     public void RunPerformed()
     {
@@ -110,64 +111,64 @@ public class Movement : MonoBehaviour
         {
             speed = runSpeed;
         }
-        //else if (dash)
-        //{
-        //    StartCoroutine(Dash());
-        //    dash = false;
-        //}
+        else if (dash)
+        {
+            StartCoroutine(Dash());
+            dash = false;
+        }
     }
     public void RunCancled()
     {
         speed = walkSpeed;
     }
-    //public void SlidePerformed()
-    //{
-    //    if (GroundCheck() && !isSliding)
-    //    {
-    //        StartCoroutine(Slide());
-    //        dash = false;
-    //    }
-    //}
-    //IEnumerator Dash()
-    //{
-    //    Vector3 dashDir = (horizontal > 0.1f || vertical > 0.1f || horizontal < -0.1f || vertical < -0.1f) ? horizontal * transform.right + vertical * transform.forward : transform.forward;
-    //    dashDir.y = 0;
-    //    float startTime = Time.time;
-    //    while (Time.time < startTime + dashTime)
-    //    {
-    //        charactercontroller.Move(dashSpeed * Time.fixedDeltaTime * dashDir);
-    //        yield return new WaitForFixedUpdate();
-    //    }
-    //    yield break;
-    //}
-    //IEnumerator Slide()
-    //{
-    //    if (vertical > 0.3f)
-    //    {
-    //        isSliding = true;
-    //        Vector3 slideDir = transform.forward;
-    //        slideDir.y = 0;
-    //        float startTime = Time.time;
-    //        charactercontroller.height = 1;
-    //        charactercontroller.center = new Vector3(charactercontroller.center.x, -.5f, charactercontroller.center.z);
-    //        transform.GetChild(0).localPosition = new Vector3(transform.GetChild(0).localPosition.x, 0, transform.GetChild(0).localPosition.z);
-    //        while (Time.time < startTime + slideTime)
-    //        {
-    //            charactercontroller.Move(slideSpeed * Time.fixedDeltaTime * slideDir);
-    //            yield return new WaitForFixedUpdate();
-    //        }
-    //        if (!AbovedCheck())
-    //        {
-    //            charactercontroller.height = 2;
-    //            charactercontroller.center = new Vector3(charactercontroller.center.x, 0, charactercontroller.center.z);
-    //            transform.GetChild(0).localPosition = new Vector3(transform.GetChild(0).localPosition.x, .5f, transform.GetChild(0).localPosition.z);
-    //        }
-    //        isSliding = false;
-    //        yield break;
-    //    }
-    //    else yield break;
-    //}
+    public void SlidePerformed()
+    {
+        if (GroundCheck() && !isSliding)
+        {
+            StartCoroutine(Slide());
+            dash = false;
+        }
+    }
+    IEnumerator Dash()
+    {
+        Vector3 dashDir = (horizontal > 0.1f || vertical > 0.1f || horizontal < -0.1f || vertical < -0.1f) ? horizontal * transform.right + vertical * transform.forward : transform.forward;
+        dashDir.y = 0;
+        float startTime = Time.time;
+        while (Time.time < startTime + dashTime)
+        {
+            charactercontroller.Move(dashSpeed * Time.fixedDeltaTime * dashDir);
+            yield return new WaitForFixedUpdate();
+        }
+        yield break;
+    }
+    IEnumerator Slide()
+    {
+        if (vertical > 0.3f)
+        {
+            isSliding = true;
+            animator.SetBool("Slide", true);
+            Vector3 slideDir = transform.forward;
+            slideDir.y = 0;
+            float startTime = Time.time;
+            charactercontroller.height = 1;
+            charactercontroller.center = new Vector3(charactercontroller.center.x, .5f, charactercontroller.center.z);
+            while (Time.time < startTime + slideTime)
+            {
+                charactercontroller.Move(slideSpeed * Time.fixedDeltaTime * slideDir);
+                yield return new WaitForFixedUpdate();
+            }
+            if (!AbovedCheck())
+            {
+                charactercontroller.height = 2;
+                charactercontroller.center = new Vector3(charactercontroller.center.x, 1, charactercontroller.center.z);
+            }
+            isSliding = false;
+            animator.SetBool("Slide", false);
+            yield break;
+        }
+        else yield break;
+    }
     bool GroundCheck() => Physics.CheckSphere(transform.position, .5f, groundCheck, QueryTriggerInteraction.Ignore);
-    //bool AbovedCheck() => Physics.Raycast(transform.position, transform.up, out RaycastHit hit, 1.2f, groundCheck);
+    bool AbovedCheck() => Physics.Raycast(transform.position, transform.up, out RaycastHit hit, 2.2f, groundCheck);
 
 }

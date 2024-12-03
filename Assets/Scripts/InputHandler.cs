@@ -22,4 +22,8 @@ public class InputHandler : MonoBehaviour
         if (obj.performed) movement.RunPerformed();
         if (obj.canceled) movement.RunCancled();
     }
+    public void Slide_Performed(InputAction.CallbackContext obj)
+    {
+        if (obj.performed) movement.SlidePerformed();
+    }
 }

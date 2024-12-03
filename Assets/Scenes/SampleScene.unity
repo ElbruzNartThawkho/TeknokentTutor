@@ -1054,10 +1054,10 @@ MonoBehaviour:
     m_ActionName: 'Player/Crouch[/Keyboard/c]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1586664315}
-        m_TargetAssemblyTypeName: Movement, Assembly-CSharp
-        m_MethodName: JumpPerformed
-        m_Mode: 1
+      - m_Target: {fileID: 1586664316}
+        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
+        m_MethodName: Jump_performed
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
